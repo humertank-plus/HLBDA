@@ -22,7 +22,7 @@ from sklearn.model_selection import train_test_split, cross_val_score, cross_val
 # 读入待分类数据,赋值给feat
 #feat=pd.read_csv('D:\OneDrive\post graduate\Datasets\sonar\sonar_data.csv',header=None)
 #feat = pd.read_csv('D:\OneDrive\post graduate\Datasets\ionosphere\iono_feature.csv', header=None)
-feat = pd.read_csv('breast_data_normal.csv', header=None)
+feat = pd.read_csv('breast_data_normal.csv', header=None)#该文件是经过标准化处理的
 #feat=pd.read_csv(,header=None)
 # 读入分类标签,赋值给label
 #label = pd.read_csv('D:\OneDrive\post graduate\Datasets\sonar\sonar_label.csv', header=None)
