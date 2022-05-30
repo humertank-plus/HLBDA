@@ -22,11 +22,11 @@ import time
 '''
 
 # 读入待分类数据,赋值给feat
-feat = np.loadtxt("D:\OneDrive\post graduate\Datasets\\breast_cancer\\breast_data_normal.csv",delimiter=',',encoding='utf-8-sig')
+feat = np.loadtxt("D:\OneDrive\post graduate\Datasets\dataset\ionosphere_351_34.2\iono_feature.csv",delimiter=',',encoding='utf-8-sig')
 
 # print(featTemp.info())
 # 读入分类标签,赋值给label
-label = np.loadtxt("D:\OneDrive\post graduate\Datasets\\breast_cancer\label_data.csv",delimiter=',',encoding='utf-8-sig')
+label = np.loadtxt("D:\OneDrive\post graduate\Datasets\dataset\ionosphere_351_34.2\iono_label.csv",delimiter=',',encoding='utf-8-sig')
 
 '''
 数据归一化
@@ -36,10 +36,7 @@ label = np.loadtxt("D:\OneDrive\post graduate\Datasets\\breast_cancer\label_data
 # feat = pd.DataFrame(feat)  # 之后的计算需要转换为DataFrame
 
 
-#如果是高维数据集的话，用reliefF提前降一下维度
-Score = reliefFScore(feat, label)
-top_index = top_select(Score)
-feat = feat[:, top_index]
+
 '''
 设置参数
 '''
@@ -48,6 +45,12 @@ N = 10  # 蜻蜓的个数
 D = feat.shape[1]  # 特征数及维数
 pl = 0.4  # 个体学习率
 gl = 0.7  # 种群学习率
+
+#如果是高维数据集的话，用reliefF提前降一下维度
+if(D>=7000):
+    Score = reliefFScore(feat, label)
+    top_index = top_select(Score)
+    feat = feat[:, top_index]
 
 '''
 HLBDA
