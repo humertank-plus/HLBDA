@@ -102,10 +102,10 @@ def reliefFScore(X, y, **kwargs):
 		score -= near_hit_term / k
 	# print("reliefF后每个特征的得分:")
 	# print(score)
-	return score
+	return score[:-1]
 
 
-def top_select(score, percentage=0.001):
+def top_select(score, percentage=0.05):
 	score = np.ndarray.flatten(score)
 	select_length = int(percentage * len(score))
 	sorted_index = np.argsort(-score)

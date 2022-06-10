@@ -6,7 +6,6 @@ DOI: https://doi.org/10.1016/j.knosys.2020.106553
 '''
 导入相应的包
 '''
-import np as np
 from numpy.matlib import repmat
 import pandas as pd
 import numpy as np
@@ -17,40 +16,46 @@ from fitness_function import *
 from initial_population import *
 from filter import reliefFScore,top_select
 import time
+from KneePointDivideData import findKneePoint
 '''
 读入数据
 '''
 
 # 读入待分类数据,赋值给feat
-feat = np.loadtxt("D:\OneDrive\post graduate\Datasets\dataset\ionosphere_351_34.2\iono_feature.csv",delimiter=',',encoding='utf-8-sig')
+featTemp = np.loadtxt("D:\OneDrive\post graduate\Datasets\dataset\dataCSV_high\orlraws10P(100,10304).csv",delimiter=',',encoding='utf-8-sig')
 
 # print(featTemp.info())
 # 读入分类标签,赋值给label
-label = np.loadtxt("D:\OneDrive\post graduate\Datasets\dataset\ionosphere_351_34.2\iono_label.csv",delimiter=',',encoding='utf-8-sig')
+# label = np.loadtxt("D:\OneDrive\post graduate\Datasets\dataset\ionosphere_351_34.2\iono_label.csv",delimiter=',',encoding='utf-8-sig')
+feat=featTemp[:,:-1]
+label=featTemp[:,-1]
+
+
 
 '''
 数据归一化
 '''
-# stand = MinMaxScaler()
-# feat = stand.fit_transform(featTemp)
-# feat = pd.DataFrame(feat)  # 之后的计算需要转换为DataFrame
+stand = MinMaxScaler()
+feat = stand.fit_transform(featTemp)
 
 
+#如果是高维数据集的话，用reliefF提前降一下维度
+if(feat.shape[1]>=7000):
+    Score = reliefFScore(feat, label)
+    ratio=findKneePoint(Score)
+    top_index = top_select(Score,ratio)
+    feat = feat[:, top_index]
 
 '''
 设置参数
 '''
 maxIteration = 100  # 最大迭代次数
-N = 10  # 蜻蜓的个数
+N = 50  # 蜻蜓的个数
 D = feat.shape[1]  # 特征数及维数
 pl = 0.4  # 个体学习率
 gl = 0.7  # 种群学习率
 
-#如果是高维数据集的话，用reliefF提前降一下维度
-if(D>=7000):
-    Score = reliefFScore(feat, label)
-    top_index = top_select(Score)
-    feat = feat[:, top_index]
+
 
 '''
 HLBDA
@@ -94,6 +99,9 @@ Xpb = np.zeros((N, D))
 Xpw = np.zeros((N, D))
 
 # 开始迭代
+if(D<N):
+    print('蜻蜓数量太多了')
+    exit()
 while t <= maxIteration:
     for i in range(N):  # 每只蜻蜓进行一次计算,接近食物源，远离天敌，更新Xpb、Xpw、Xf、Xe、fitPB、fitPW
         fit[0, i] = fitness_function(feat, label, X[i, :])
